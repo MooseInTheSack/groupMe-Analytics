@@ -25,42 +25,35 @@ const getDictionaryOfIdsToNames = () => {
     return idNameDict
 }
 
-const convertIdsToNames = (topTenDictWithIds) => {
+const convertIdsToNames = (arrayOfArrays) => {
+    console.log('arrayOfArrays: ', arrayOfArrays)
+    const topMembers = arrayOfArrays
     const TopTenDictWithNames = {}
     const dictOfIdsToNames = getDictionaryOfIdsToNames()
-    for(let entry of topTenDictWithIds) {
-        const entryId = Object.keys(entry)[0]
-        const entryName = dictOfIdsToNames[entryId]
-        TopTenDictWithNames[entryName] = entry[entryId]
+    for(let member of topMembers) {
+        console.log('member: ', member)
+        const memberName = dictOfIdsToNames[member[0]]
+        TopTenDictWithNames[memberName] = member[1]
     }
     return TopTenDictWithNames
 }
 
 const getMostActiveMembersFromDict = (dict, numberOfEntries) => {
-    const topTenArray = []
-    for(let key in dict) {
-        if(key === 'system') break
-        const person = { [key]: dict[key]}
-        if(topTenArray.length < numberOfEntries) {
-            topTenArray.push(person)
-        } else {
-            
-            for(let topStopIndex in topTenArray) {
-                const indexToCheck = topTenArray.length - topStopIndex - 1
-                let topSpotInArray = topTenArray[indexToCheck]
-                if(topSpotInArray[Object.keys(topSpotInArray)[0]] < person[Object.keys(person)[0]]) {
-                    //now we gotta move the spot down but im too lazy rn
-                    //let loserSpot = topSpotInArray[topStopIndex]
-                    //topSpotInArray[topStopIndex] = person
-                    topTenArray[indexToCheck] = person
-                    break
-                }
-            }
-        }
+    let topTenArray = []
+    
+
+    for (var user_id in dict) {
+        topTenArray.push([user_id, dict[user_id]]);
     }
-    //return topTenArray
-    const topTenArrayWithNames = convertIdsToNames(topTenArray)
-    return topTenArrayWithNames
+
+    topTenArray = topTenArray.sort(function(a, b) {
+        return a[1] - b[1];
+    })
+
+    topTenArray = topTenArray.splice(topTenArray.length - numberOfEntries, numberOfEntries)
+
+    const sortedMostActiveMembers = convertIdsToNames(topTenArray)
+    return sortedMostActiveMembers
 
 }
 
@@ -98,5 +91,5 @@ const printMostActiveMembers = (numberOfEntries) => {
 */
 }
 
-const topTenMembers = printMostActiveMembers(25)
+const topTenMembers = printMostActiveMembers(50)
 console.log('topTenMembers: ', topTenMembers)
