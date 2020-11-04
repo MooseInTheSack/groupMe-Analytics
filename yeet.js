@@ -4,12 +4,12 @@ const fs = require('fs');
 
 const getGroupMembers = () => {
     //get all groupParticipants with their name and ID's
-    const rawdata = fs.readFileSync('./groupMeData/59528655/conversation.json')
+    const rawdata = fs.readFileSync('./11_04_groupMeData/59528655/conversation.json')
     return JSON.parse(rawdata)
 }
 
 const getConversation = () => {
-    const rawdata = fs.readFileSync('./groupMeData/59528655/message.json')
+    const rawdata = fs.readFileSync('./11_04_groupMeData/59528655/message.json')
     return JSON.parse(rawdata)
 }
 
@@ -26,7 +26,7 @@ const getDictionaryOfIdsToNames = () => {
 }
 
 const convertIdsToNames = (arrayOfArrays) => {
-    console.log('arrayOfArrays: ', arrayOfArrays)
+    //console.log('arrayOfArrays: ', arrayOfArrays)
     const topMembers = arrayOfArrays
     const TopTenDictWithNames = {}
     const dictOfIdsToNames = getDictionaryOfIdsToNames()
@@ -70,26 +70,48 @@ const printMostActiveMembers = (numberOfEntries) => {
     }
 
     return getMostActiveMembersFromDict(dict, numberOfEntries)
-    /*
-    FORMAT:
-    Message:  {
-    attachments: [],
-    avatar_url: 'https://i.groupme.com/1960x1960.jpeg.79474ec6076b46d4923714c1be94a824',
-    created_at: 1600118245,
-    favorited_by: [ '12799035', '14926039', '2137491', '21477059', '84752862' ],
-    group_id: '59528655',
-    id: '160011824569989107',
-    name: 'Adil D',
-    sender_id: '85454629',
-    sender_type: 'user',
-    source_guid: 'android-0462bb7c-fe7b-415e-a201-3e21ddd5f897',
-    system: false,
-    text: 'Please stop the train, I need to exit � ',
-    user_id: '85454629',
-    platform: 'gm'
-}          
-*/
+    
 }
 
-const topTenMembers = printMostActiveMembers(50)
-console.log('topTenMembers: ', topTenMembers)
+const getMostLikedMessages = (numberToRetrieve, likesThreshold) => {
+    
+    const dict = getConversation()
+
+    const dictOfIds = getDictionaryOfIdsToNames()
+
+    const mostLikedMessages = {}
+
+    //console.log('dict: ', dict[0])
+    for(let message of dict) {
+        if(message.favorited_by && message.favorited_by.length > likesThreshold) {
+            
+            const senderName = dictOfIds[message.sender_id]
+            
+            if(!mostLikedMessages[senderName])
+                mostLikedMessages[senderName] = []
+            if(message.text) {
+                //console.log('message: ', message.text)
+                mostLikedMessages[senderName].push(message.text)
+            } else if(message.attachments && message.attachments[0] && message.attachments[0].url ) {
+                //console.log('attachments: ', message.attachments)
+                mostLikedMessages[senderName].push(message.attachments[0].url)
+            }
+        }
+    }
+    //console.log('mostLikedMessages: ', mostLikedMessages)
+
+    const namesToTopMessages = {}
+
+    for(let name of Object.keys(mostLikedMessages)) {
+        namesToTopMessages[name] = { 
+            topMessages: mostLikedMessages[name].length,
+            topMessageThreshold: likesThreshold,
+            totalMessages: null,
+        }
+    }
+
+    console.log('namesToTopMessages: ', namesToTopMessages)
+
+}
+
+getMostLikedMessages(3, 14);
