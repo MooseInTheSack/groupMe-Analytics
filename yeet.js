@@ -4,12 +4,12 @@ const fs = require('fs');
 
 const getGroupMembers = () => {
     //get all groupParticipants with their name and ID's
-    const rawdata = fs.readFileSync('./11_04_groupMeData/59528655/conversation.json')
+    const rawdata = fs.readFileSync('./2021_08_29_groupMeData/59528655/conversation.json')
     return JSON.parse(rawdata)
 }
 
 const getConversation = () => {
-    const rawdata = fs.readFileSync('./11_04_groupMeData/59528655/message.json')
+    const rawdata = fs.readFileSync('./2021_08_29_groupMeData/59528655/message.json')
     return JSON.parse(rawdata)
 }
 
