@@ -79,10 +79,20 @@ const getMostLikedMessages = (numberToRetrieve, likesThreshold) => {
 
     const dictOfIds = getDictionaryOfIdsToNames()
 
-    const mostLikedMessages = {}
+    let mostLikedMessages = {}
+    let totalMessagesCount = {}
 
     //console.log('dict: ', dict[0])
     for(let message of dict) {
+
+        if(message.sender_id) {
+            const senderName = dictOfIds[message.sender_id]
+
+            if(!totalMessagesCount[senderName])
+                totalMessagesCount[senderName] = 0
+            totalMessagesCount[senderName] += 1
+        }        
+
         if(message.favorited_by && message.favorited_by.length > likesThreshold) {
             
             const senderName = dictOfIds[message.sender_id]
@@ -106,7 +116,8 @@ const getMostLikedMessages = (numberToRetrieve, likesThreshold) => {
         namesToTopMessages[name] = { 
             topMessages: mostLikedMessages[name].length,
             topMessageThreshold: likesThreshold,
-            totalMessages: null,
+            totalMessages: totalMessagesCount[name],
+            messagesThatMetThreshold: mostLikedMessages[name].length/totalMessagesCount[name]
         }
     }
 
@@ -114,4 +125,4 @@ const getMostLikedMessages = (numberToRetrieve, likesThreshold) => {
 
 }
 
-getMostLikedMessages(3, 14);
+getMostLikedMessages(3, 30)
