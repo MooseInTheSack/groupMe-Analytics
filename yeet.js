@@ -4,12 +4,12 @@ const fs = require('fs');
 
 const getGroupMembers = () => {
     //get all groupParticipants with their name and ID's
-    const rawdata = fs.readFileSync('./2021_08_29_groupMeData/59528655/conversation.json')
+    const rawdata = fs.readFileSync('./00001/59528655/conversation.json')
     return JSON.parse(rawdata)
 }
 
 const getConversation = () => {
-    const rawdata = fs.readFileSync('./2021_08_29_groupMeData/59528655/message.json')
+    const rawdata = fs.readFileSync('./00001/59528655/message.json')
     return JSON.parse(rawdata)
 }
 
@@ -117,7 +117,7 @@ const getMostLikedMessages = (numberToRetrieve, likesThreshold) => {
             topMessages: mostLikedMessages[name].length,
             topMessageThreshold: likesThreshold,
             totalMessages: totalMessagesCount[name],
-            messagesThatMetThreshold: mostLikedMessages[name].length/totalMessagesCount[name]
+            percentOfMessagesThatMetThreshold: mostLikedMessages[name].length/totalMessagesCount[name]
         }
     }
 
@@ -125,4 +125,4 @@ const getMostLikedMessages = (numberToRetrieve, likesThreshold) => {
 
 }
 
-getMostLikedMessages(3, 30)
+getMostLikedMessages(3, 20)
